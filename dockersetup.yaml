@@ -1,0 +1,46 @@
+---
+-
+  name: Docker Setup Playbook
+  hosts: all
+
+  tasks:
+    - 
+      name: Removing old docker pkgs
+      apt:
+        name:
+          - docker 
+          - docker-client
+          - docker-client-latest
+          - docker-common
+          - docker-latest
+          - docker-latest-logrotate
+          - docker-logrotate
+          - docker-engine
+        state: absent
+        
+    - 
+      name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    -
+      name: Seeting up the repo's for Docker
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    -
+      name: Installing Docker Software
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
+    -
+      name: Starting and enabling Docker Services
+      service:
+        name: docker
+        state: started
+        enabled: yes
